@@ -1,7 +1,8 @@
 version: 3
 
-tasks:
+tasks:  
   run:
+    aliases: [default]
     cmds:
       - go run main.go
   build:

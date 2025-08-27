@@ -17,6 +17,7 @@ type CmakeLists struct {
 	MainFile             string
 	SrcDir               string
 	IncludeDir           string
+	Filename             string
 }
 
 //go:embed cmake.tmpl
@@ -28,7 +29,7 @@ func main() {
 	executableName := flag.String("e", "main", "Executable name")
 	srcDir := flag.String("s", "./src", "Source directory")
 	includeDir := flag.String("i", "./include", "Include directory")
-	isInteractive := flag.Bool("i", true, "Interactive mode")
+	isInteractive := flag.Bool("it", true, "Interactive mode")
 	flag.Parse()
 	var cmakeLists CmakeLists
 	if isInteractive == nil {
@@ -46,11 +47,19 @@ func main() {
 	if err != nil {
 		log.Fatal("Ошибка парсинга шаблона:", err)
 	}
+	file, err := os.OpenFile(cmakeLists.Filename, os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal("Ошибка открытия файла:", err)
+	}
+	defer file.Close()
 
 	// Выполняем шаблон
-	err = tmpl.Execute(os.Stdout, cmakeLists)
+	err = tmpl.Execute(file, cmakeLists)
 	if err != nil {
 		log.Fatal("Ошибка выполнения шаблона:", err)
+	}
+	if err := file.Close(); err != nil {
+		log.Fatal("Ошибка закрытия файла:", err)
 	}
 }
 
@@ -69,11 +78,15 @@ func interactiveCmake() CmakeLists {
 	cmakeLists.ProjectName = scanOrDefault("project")
 	fmt.Print("Имя исполняемого файла: (по умолчанию main)")
 	cmakeLists.ExecutableName = scanOrDefault("main")
-	fmt.Print("Путь к исходному коду: (по умолчанию ./src)")
+	fmt.Print("Путь к исходному коду: (по умолчанию src)")
 	cmakeLists.SrcDir = scanOrDefault("./src")
+	cmakeLists.SrcDir = strings.TrimPrefix(cmakeLists.SrcDir, ".")
 	fmt.Print("Путь к заголовочным файлам: (по умолчанию ./include)")
 	cmakeLists.IncludeDir = scanOrDefault("./include")
+	cmakeLists.IncludeDir = strings.TrimPrefix(cmakeLists.IncludeDir, ".")
 	fmt.Print("Версия cmake для сборки: (по умолчанию 3.10)")
 	cmakeLists.CmakeMinimumRequired = scanOrDefault("3.10")
+	fmt.Print("Название файла (по умолчанию CmakeLists.txt)")
+	cmakeLists.Filename = scanOrDefault("CmakeLists.txt")
 	return cmakeLists
 }
