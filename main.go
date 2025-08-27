@@ -86,7 +86,7 @@ func interactiveCmake() CmakeLists {
 	cmakeLists.IncludeDir = strings.TrimPrefix(cmakeLists.IncludeDir, ".")
 	fmt.Print("Версия cmake для сборки: (по умолчанию 3.10)")
 	cmakeLists.CmakeMinimumRequired = scanOrDefault("3.10")
-	fmt.Print("Название файла (по умолчанию CmakeLists.txt)")
-	cmakeLists.Filename = scanOrDefault("CmakeLists.txt")
+	fmt.Print("Название файла (по умолчанию CMakeLists.txt)")
+	cmakeLists.Filename = scanOrDefault("CMakeLists.txt")
 	return cmakeLists
 }
