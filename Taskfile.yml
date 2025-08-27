@@ -1,0 +1,12 @@
+version: 3
+
+tasks:
+  run:
+    cmds:
+      - go run main.go
+  build:
+    cmds:
+      - go build -o cmakeinit main.go
+  install:
+    cmds:
+      - go install .
