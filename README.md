@@ -35,26 +35,29 @@ go build -o cmakeinit
 
 ## Usage
 
-Interactive mode (default)
+Interactive mode
 ```bash
-cmakeinit
+cmakeinit .
 ```
 You will be prompted to enter project settings.
 
 Non-interactive mode
 ```bash
-cmakeinit -p MyProject -e myapp -s ./src -i ./include -m 3.16 -it=false
+Usage of cmakeinit:
+  -ac
+        Create folders and main.c file (default notset)
+  -i string
+        Include directory (default "./include")
+  -m string
+        Minimum version of cmake (default "3.10")
+  -name string
+        CMakeLists.txt filename (default "CMakeLists.txt")
+  -p string
+        Project name (default "project")
+  -s string
+        Source directory (default "./src")
 ```
 
 ## Generated Output
 
-The generated `CMakeLists.txt` includes:
-
-```
-cmake_minimum_required(VERSION ...)
-project(...)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-file(GLOB_RECURSE SOURCES "src/*.c")
-include_directories(include)
-add_executable(${PROJECT_NAME} ${SOURCES})
-```
+The generated `CMakeLists.txt` includes (see [cmake.tmpl](cmake.tmpl)):
